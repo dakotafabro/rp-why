@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcp-rpwhy"
+version = "1.0.0"
+description = "MCP server for rp-why Three Dimensions AI collaboration measurement"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.13.0",
+]
+
+[project.scripts]
+mcp_rpwhy = "mcp_rpwhy.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_rpwhy"]
