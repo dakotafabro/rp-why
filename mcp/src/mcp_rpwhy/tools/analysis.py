@@ -1,5 +1,8 @@
 import json
+import os
+import subprocess
 from datetime import datetime, date
+from pathlib import Path
 from typing import Optional
 from fastmcp import FastMCP
 
@@ -81,6 +84,41 @@ def register_analysis_tools(mcp: FastMCP) -> None:
                     "nudges": nudges,
                 },
             }
+
+            try:
+                repo_root = os.environ.get("SPORE_REPO_ROOT")
+                if not repo_root:
+                    try:
+                        repo_root = subprocess.check_output(
+                            ["git", "rev-parse", "--show-toplevel"],
+                            stderr=subprocess.DEVNULL,
+                            text=True,
+                        ).strip()
+                    except Exception:
+                        repo_root = str(Path.home() / "the_professional")
+
+                log_path = Path(repo_root) / ".interoception-log.csv"
+                session_id = next(iter(session_ids)) if session_ids else date.today().isoformat()
+                total_tokens = 0
+                for meta in relevant_meta.values():
+                    total_tokens += meta.get("total_tokens", 0)
+
+                row = ",".join([
+                    datetime.now().isoformat(),
+                    str(session_id),
+                    "0",
+                    str(analysis.get("total_prompts", 0)),
+                    str(total_tokens),
+                    "0",
+                    "auto",
+                    "auto:rpwhy-current piggybacked",
+                ])
+
+                with open(log_path, "a") as f:
+                    f.write(row + "\n")
+            except Exception:
+                pass
+
             return json.dumps(result, indent=2)
         finally:
             analyzer.close()
