@@ -112,7 +112,7 @@ DOK_NAMES_SHORT: dict = {
 
 ADT_ZONES: list = [
     "Overpowered", "Underutilizing", "Expected",
-    "Growing", "Frontier", "Thinking Ahead",
+    "Growing", "Leveraging", "Frontier", "Thinking Ahead",
 ]
 
 ZONE_COLORS: dict = {
@@ -120,6 +120,7 @@ ZONE_COLORS: dict = {
     "Growing": "blue",
     "Frontier": "green",
     "Thinking Ahead": "purple",
+    "Leveraging": "teal",
     "Underutilizing": "amber",
     "Overpowered": "red",
 }
@@ -171,6 +172,11 @@ ZONE_NUDGES: dict = {
         "Your thinking is ready for the next tier. Explore sub-agents or multi-step delegation.",
         "What tool or workflow would unlock the depth you are already thinking at?",
     ],
+    'Leveraging': [
+        "The system is running smoothly. Protect this mode for execution weeks.",
+        "Encoded depth is working. The strategic thinking lives in the configuration.",
+        "Throughput with quality at scale. When design work returns, the depth will follow.",
+    ],
     'Underutilizing': [
         "Powerful tools deserve powerful questions. Before each prompt: can this be more strategic?",
         "Batch simple queries. Reserve the agent for work that requires reasoning.",
@@ -188,6 +194,7 @@ ZONE_REFLECTIONS: dict = {
     'Growing': "What workflow could you delegate more fully to the agent?",
     'Expected': "What strategic question have you been avoiding?",
     'Thinking Ahead': "What tool or workflow would unlock the depth you are already thinking at?",
+    'Leveraging': "What design investment made this execution mode possible, and what's the next system worth building?",
     'Underutilizing': "What is the most strategic question you could ask right now?",
     'Overpowered': "Is there a harder problem this tool should be pointed at?",
 }
@@ -286,9 +293,16 @@ def detect_compression(text: str, session_prompt_index: int) -> bool:
 
 
 def calculate_adt_zone(dok_adjusted: float, tm_tier: int,
-                       trajectory: str | None = None) -> str:
+                       trajectory: str | None = None,
+                       compression_pct: float | None = None) -> str:
     """
     Calculate diagnostic zone from DOK x TM matrix.
+
+    Compression-aware: when TM >= 5 and DOK is in band 2 (Application),
+    compression >= 10% indicates the practitioner has encoded strategic
+    thinking into the system (recipes, workflows, conventions). The zone
+    is "Leveraging" rather than "Underutilizing" because the prompt-level
+    DOK appears low only because complexity lives in the configuration.
 
     Trajectory-aware: when trajectory is 'improving' (DOK trending
     upward over the measurement window), the zone is upgraded one
@@ -299,7 +313,7 @@ def calculate_adt_zone(dok_adjusted: float, tm_tier: int,
     static position alone would suggest.
 
     Zone hierarchy (low -> high):
-      Overpowered -> Underutilizing -> Expected -> Growing -> Frontier
+      Overpowered -> Underutilizing -> Leveraging -> Expected -> Growing -> Frontier
     Orthogonal zone (high DOK, low TM):
       Thinking Ahead
     """
@@ -316,7 +330,10 @@ def calculate_adt_zone(dok_adjusted: float, tm_tier: int,
         if dok_band >= 3:
             zone = "Frontier"
         elif dok_band == 2:
-            zone = "Underutilizing"
+            if compression_pct is not None and compression_pct >= 10.0:
+                zone = "Leveraging"
+            else:
+                zone = "Underutilizing"
         else:
             zone = "Overpowered"
     elif tm_tier >= 3:
@@ -336,10 +353,11 @@ def calculate_adt_zone(dok_adjusted: float, tm_tier: int,
         else:
             zone = "Expected"
 
-    if trajectory == 'improving' and zone not in ('Frontier', 'Thinking Ahead'):
+    if trajectory == 'improving' and zone not in ('Frontier', 'Thinking Ahead', 'Leveraging'):
         upgrade_map = {
             'Overpowered': 'Underutilizing',
-            'Underutilizing': 'Growing',
+            'Underutilizing': 'Leveraging',
+            'Leveraging': 'Growing',
             'Expected': 'Growing',
             'Growing': 'Frontier',
         }

@@ -37,9 +37,10 @@ class GrowthNudge:
         """Classify text by DOK level."""
         return classify_dok(text)
 
-    def calculate_zone(self, dok: float, tm_tier: int) -> str:
+    def calculate_zone(self, dok: float, tm_tier: int,
+                       compression_pct: float | None = None) -> str:
         """Calculate diagnostic zone from DOK x TM matrix."""
-        return calculate_adt_zone(dok, tm_tier)
+        return calculate_adt_zone(dok, tm_tier, compression_pct=compression_pct)
 
     def get_nudges(self, zone: str) -> List[str]:
         """Get nudges for a diagnostic zone."""
