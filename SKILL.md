@@ -2,7 +2,7 @@
 name: rp-why
 description: Load when reflecting on AI collaboration quality or tracking growth over time. Analyzes session history to surface how deeply you think with AI tools and whether your orchestration sophistication matches your cognitive depth. Provides actionable nudges to push toward more strategic work.
 author: dakotafabro
-version: "4.0"
+version: "4.1"
 tags:
   - reflection
   - growth
@@ -427,6 +427,7 @@ For users familiar with the Gas Town stages:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 4.1 | 2026-08 | Added Leveraging zone (7th diagnostic zone). Compression >= 10% at TM 5+ splits former Underutilizing into Leveraging (encoded depth) vs Underutilizing (genuine mismatch). Zone calculation now compression-aware. Growth nudges and reflections in all report types. |
 | 4.0 | 2026-06 | Three Dimensions model (DOK + TM + ADT), Orchestra Tiers, diagnostic zones, compression tracking, `/rp-why baseline` alias, `/rp-why overall` report, phase analysis, backward compatibility with v3 baselines |
 | 3.0 | 2026-02 | Quadrant visualization, growth nudges, reflection prompts |
 | 2.x | 2026-01 | Integration matrix, target profiles, baseline comparison |

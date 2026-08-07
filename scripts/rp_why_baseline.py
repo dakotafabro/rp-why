@@ -109,9 +109,11 @@ class RPWhyAnalyzer:
         return core_estimate_tm_tier(session_data)
 
     def calculate_adt_zone(self, dok_adjusted: float, tm_tier: int,
-                          trajectory: str | None = None) -> str:
+                          trajectory: str | None = None,
+                          compression_pct: float | None = None) -> str:
         """Calculate diagnostic zone from DOK x TM matrix."""
-        return core_calculate_adt_zone(dok_adjusted, tm_tier, trajectory)
+        return core_calculate_adt_zone(dok_adjusted, tm_tier, trajectory,
+                                       compression_pct=compression_pct)
 
     # --- Data Access ------------------------------------------------------
 
@@ -628,8 +630,11 @@ class RPWhyAnalyzer:
             daily_scores = self.get_daily_breakdown(prompts)
             trajectory = self.calculate_trajectory(daily_scores)
 
-            # Calculate ADT zone (trajectory-aware)
-            adt_zone = self.calculate_adt_zone(analysis['dok_adjusted'], avg_tm, trajectory)
+            # Calculate ADT zone (trajectory + compression aware)
+            adt_zone = self.calculate_adt_zone(
+                analysis['dok_adjusted'], avg_tm, trajectory,
+                compression_pct=analysis['compression_pct']
+            )
 
             # Calculate floor (10th percentile DOK)
             all_daily_doks = sorted([d['avg_dok'] for d in daily_scores])
@@ -866,9 +871,10 @@ class RPWhyAnalyzer:
         zone_descriptions = {
             'Frontier': 'TM and DOK matched and growing together. Operating at the\nproductive edge.',
             'Growing': 'Approaching a match between tool sophistication and cognitive\ndepth. Building toward effective use.',
+            'Leveraging': 'Strategic thinking encoded in the system. Prompt-level DOK\nappears low because complexity lives in configuration.\nThe system is working as designed.',
             'Expected': 'Tool usage and cognitive depth appropriate for current level.\nHealthy starting position.',
             'Thinking Ahead': 'Cognitive depth exceeds tool sophistication. Opportunity to\nadopt more powerful orchestration patterns.',
-            'Underutilizing': 'Tool sophistication exceeds cognitive depth. Opportunity to\ndeepen the questions being asked.',
+            'Underutilizing': 'Tool sophistication exceeds cognitive depth with no encoded\ndepth. Opportunity to deepen the questions being asked.',
             'Overpowered': 'Significant mismatch between tool complexity and task depth.\nResources spent without proportional cognitive return.'
         }
         print(zone_descriptions.get(adt_zone, ''))
@@ -936,7 +942,10 @@ class RPWhyAnalyzer:
             tm_tier = self.estimate_tm_tier(session_meta)
 
         dok_adj = analysis['dok_adjusted']
-        adt_zone = self.calculate_adt_zone(dok_adj, tm_tier)
+        adt_zone = self.calculate_adt_zone(
+            dok_adj, tm_tier,
+            compression_pct=analysis.get('compression_pct')
+        )
 
         print()
         print("=" * 66)
@@ -1006,6 +1015,7 @@ class RPWhyAnalyzer:
         nudges = {
             'Frontier': 'Strong session. The collaboration is matched and productive.\nConsider extending one thread into a multi-session investigation.',
             'Growing': 'Building momentum. Try framing one more task as a design\ndecision rather than an execution request.',
+            'Leveraging': 'The system is running smoothly. Protect this mode for\nexecution weeks. When design work returns, depth will follow.',
             'Expected': 'Solid foundation. Ask "what are the trade-offs?" before your\nnext implementation prompt.',
             'Thinking Ahead': 'Your thinking exceeds your tools. Try delegating a work\nstream to a sub-agent or multi-step workflow.',
             'Underutilizing': 'Powerful tools available. Before each prompt: can this be\nmore strategic? Batch simple queries.',
@@ -1018,6 +1028,7 @@ class RPWhyAnalyzer:
         reflections = {
             'Frontier': 'What complex challenge could benefit from sustained\n   exploration across your next few sessions?',
             'Growing': 'What workflow could you delegate more fully to the agent?',
+            'Leveraging': 'What design investment made this execution mode possible,\n   and what is the next system worth building?',
             'Expected': 'What strategic question have you been avoiding?',
             'Thinking Ahead': 'What tool or workflow would unlock the depth you are\n   already thinking at?',
             'Underutilizing': 'What is the most strategic question you could ask right now?',
@@ -1044,7 +1055,10 @@ class RPWhyAnalyzer:
         else:
             tm_c = tm_b
         # Single-day compare cannot measure trajectory - pass None
-        adt_c = self.calculate_adt_zone(dok_c, tm_c, None)
+        adt_c = self.calculate_adt_zone(
+            dok_c, tm_c, None,
+            compression_pct=current.get('compression_pct')
+        )
 
         period = baseline.get('period', {})
         period_str = f"{period.get('start', '?')} - {period.get('end', '?')}"
@@ -1180,6 +1194,7 @@ class RPWhyAnalyzer:
         nudges = {
             'Frontier': 'Strong session. The collaboration is matched and productive.\nConsider extending one thread into a multi-session investigation.',
             'Growing': 'Building momentum. Try framing one more task as a design\ndecision rather than an execution request.',
+            'Leveraging': 'The system is running smoothly. Protect this mode for\nexecution weeks. When design work returns, depth will follow.',
             'Expected': 'Solid foundation. Ask "what are the trade-offs?" before your\nnext implementation prompt.',
             'Thinking Ahead': 'Your thinking exceeds your tools. Try delegating a work\nstream to a sub-agent or multi-step workflow.',
             'Underutilizing': 'Powerful tools available. Before each prompt: can this be\nmore strategic? Batch simple queries.',
@@ -1192,6 +1207,7 @@ class RPWhyAnalyzer:
         reflections = {
             'Frontier': 'What complex challenge could benefit from sustained\n   exploration across your next few sessions?',
             'Growing': 'What workflow could you delegate more fully to the agent?',
+            'Leveraging': 'What design investment made this execution mode possible,\n   and what is the next system worth building?',
             'Expected': 'What strategic question have you been avoiding?',
             'Thinking Ahead': 'What tool or workflow would unlock the depth you are\n   already thinking at?',
             'Underutilizing': 'What is the most strategic question you could ask right now?',
@@ -1215,7 +1231,10 @@ class RPWhyAnalyzer:
         dok_adj = analysis['dok_adjusted']
         # Use fresh trajectory from current daily_scores, not stale baseline
         fresh_trajectory = self.calculate_trajectory(daily_scores)
-        adt_zone = self.calculate_adt_zone(dok_adj, tm_tier, fresh_trajectory)
+        adt_zone = self.calculate_adt_zone(
+            dok_adj, tm_tier, fresh_trajectory,
+            compression_pct=analysis.get('compression_pct')
+        )
 
         period = baseline.get('period', {})
         start = period.get('start', '?')
@@ -1339,6 +1358,7 @@ class RPWhyAnalyzer:
         nudges = {
             'Frontier': 'Strong longitudinal pattern. The collaboration is matched and\nproductive. Consider extending one thread into a multi-session\ninvestigation or mentoring others in their AI collaboration practice.',
             'Growing': 'Building momentum across sessions. Try framing one more task\nas a design decision rather than an execution request. Look for\nopportunities to delegate entire workflows.',
+            'Leveraging': 'Encoded depth is working across sessions. The strategic\nthinking lives in the configuration. Protect this mode for\nexecution-heavy weeks. When design work returns, depth will follow.',
             'Expected': 'Solid foundation established. Ask "what are the trade-offs?"\nbefore your next implementation prompt. Push one routine workflow\ninto full delegation.',
             'Thinking Ahead': 'Your thinking consistently exceeds your tools. Try\ndelegating a work stream to a sub-agent or multi-step workflow.\nThe gap between your intent and tool capability is your growth edge.',
             'Underutilizing': 'Powerful tools available but underused. Before each prompt:\ncan this be more strategic? Batch simple queries and look for\npatterns you can compress into single directives.',
@@ -1353,6 +1373,7 @@ class RPWhyAnalyzer:
         reflections = {
             'Frontier': 'What complex challenge could benefit from sustained exploration\n  across your next few sessions? Where could you mentor others\n  in developing their own AI collaboration maturity?',
             'Growing': 'What workflow could you delegate more fully to the agent?\n  What would it look like to trust the tool with an entire\n  work stream from start to finish?',
+            'Leveraging': 'What design investment made this execution mode possible?\n  What is the next system worth building? Where could encoded\n  depth free you for higher-order work?',
             'Expected': 'What strategic question have you been avoiding? What would\n  change if you brought your hardest problem to the collaboration\n  instead of your most routine one?',
             'Thinking Ahead': 'What tool or workflow would unlock the depth you are already\n  thinking at? What infrastructure investment would close the gap\n  between your intent and your execution surface?',
             'Underutilizing': 'What is the most strategic question you could ask right now?\n  What would it look like to use this tool for thinking, not\n  just doing?',

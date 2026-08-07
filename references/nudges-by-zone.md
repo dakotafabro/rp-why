@@ -22,7 +22,12 @@ Contextual, actionable suggestions based on the user's position in the TM x DOK 
 - "Your thinking is ready for the next tier. Explore sub-agents or multi-step delegation."
 - "What tool or workflow would unlock the depth you are already thinking at?"
 
-## Underutilizing (Tools exceed cognitive depth)
+## Leveraging (Encoded depth - compression >= 10% at TM 5+)
+- "The system is running smoothly. Protect this mode for execution weeks."
+- "Encoded depth is working. The strategic thinking lives in the configuration."
+- "Throughput with quality at scale. When design work returns, the depth will follow."
+
+## Underutilizing (Tools exceed cognitive depth, no encoded depth)
 - "Powerful tools deserve powerful questions. Before each prompt: can this be more strategic?"
 - "Batch simple queries. Reserve the agent for work that requires reasoning."
 - "What is the most strategic question you could ask right now?"
@@ -40,5 +45,6 @@ Contextual, actionable suggestions based on the user's position in the TM x DOK 
 | Growing | "What workflow could you delegate more fully to the agent?" |
 | Expected | "What strategic question have you been avoiding?" |
 | Thinking Ahead | "What tool or workflow would unlock the depth you are already thinking at?" |
+| Leveraging | "What design investment made this execution mode possible, and what's the next system worth building?" |
 | Underutilizing | "What is the most strategic question you could ask right now?" |
 | Overpowered | "Is there a harder problem this tool should be pointed at?" |
