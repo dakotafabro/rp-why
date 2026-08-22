@@ -1,0 +1,20 @@
+{
+  "name": "rp-why",
+  "version": "4.1.0",
+  "type": "extension",
+  "description": "Three Dimensions of AI Collaboration Maturity - measure DOK, Tool Maturity, and Agentic Delegation Trust",
+  "entry": "SKILL.md",
+  "scope": "project",
+  "token_cost": 3600,
+  "keywords": ["measurement", "DOK", "maturity", "collaboration", "assessment", "three-dimensions"],
+  "author": {
+    "name": "Dakota Fabro",
+    "github": "dakotafabro"
+  },
+  "license": "Apache-2.0",
+  "repository": "https://github.com/dakotafabro/rp-why",
+  "agents": ["goose"],
+  "dependencies": [],
+  "conflicts": [],
+  "peers": ["learning-mode"]
+}
