@@ -455,6 +455,7 @@ def load_runs_from_db(limit: int = 20) -> List[dict]:
 
     cursor.execute('''
         SELECT id FROM sessions
+        WHERE session_type = 'user'
         ORDER BY created_at DESC LIMIT ?
     ''', (limit,))
     run_ids = [row[0] for row in cursor.fetchall()]
@@ -463,7 +464,7 @@ def load_runs_from_db(limit: int = 20) -> List[dict]:
     for sid in run_ids:
         cursor.execute('''
             SELECT role, content_json FROM messages
-            WHERE run_id = ?
+            WHERE session_id = ?
             ORDER BY created_timestamp ASC
         ''', (sid,))
 
