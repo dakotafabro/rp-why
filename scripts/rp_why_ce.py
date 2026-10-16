@@ -16,6 +16,7 @@ import hashlib
 import json
 import os
 import re
+import sys
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 from pathlib import Path
@@ -100,7 +101,9 @@ class CEReport:
     adt_quadrant: str = ""
 
 
-IMPLICIT_COMMAND_FINGERPRINTS: dict = {
+IMPLICIT_COMMANDS_ENV = "RP_WHY_IMPLICIT_COMMANDS"
+
+DEFAULT_IMPLICIT_COMMAND_FINGERPRINTS: dict = {
     "proceed": {
         "positive_signals": [
             r"tool_call_present",
@@ -125,8 +128,7 @@ IMPLICIT_COMMAND_FINGERPRINTS: dict = {
     },
     "deploy": {
         "positive_signals": [
-            r"npm run build",
-            r"blockcell",
+            r"build",
             r"deploy",
             r"upload",
         ],
@@ -141,69 +143,87 @@ IMPLICIT_COMMAND_FINGERPRINTS: dict = {
         ],
         "negative_signals": [],
     },
-    "merged": {
-        "positive_signals": [
-            r"what was built",
-            r"world model",
-            r"accomplishment",
-            r"unlocks",
-            r"convention",
-        ],
-        "negative_signals": [],
-    },
-    "refresh the emulator": {
-        "positive_signals": [
-            r"force-stop",
-            r"adb",
-            r"install",
-            r"launch",
-        ],
-        "negative_signals": [],
-    },
-    "commit and send to emulator": {
-        "positive_signals": [
-            r"git add",
-            r"git commit",
-            r"build",
-            r"install",
-        ],
-        "negative_signals": [],
-    },
     "start the dev server": {
         "positive_signals": [
-            r"npm run dev",
-            r"port 3000",
+            r"run dev",
+            r"localhost|port \d+",
         ],
         "negative_signals": [],
     },
     "check comments": {
         "positive_signals": [
-            r"google doc",
             r"comment",
-            r"annotation",
-            r"edit",
-        ],
-        "negative_signals": [],
-    },
-    "check annotations": {
-        "positive_signals": [
-            r"google doc",
-            r"comment",
-            r"annotation",
+            r"review|thread|annotation",
         ],
         "negative_signals": [],
     },
     "monitor ci": {
         "positive_signals": [
-            r"status check",
+            r"status check|checks",
             r"pass",
             r"fail",
             r"pending",
-            r"CI",
         ],
         "negative_signals": [],
     },
 }
+
+IMPLICIT_COMMAND_FINGERPRINTS: dict = DEFAULT_IMPLICIT_COMMAND_FINGERPRINTS
+
+
+def _normalize_fingerprint(value) -> Optional[dict]:
+    if not isinstance(value, dict):
+        return None
+    positive = value.get("positive_signals", [])
+    negative = value.get("negative_signals", [])
+    if not isinstance(positive, list) or not isinstance(negative, list):
+        return None
+    signals = [str(x) for x in positive] + [str(x) for x in negative]
+    for signal in signals:
+        try:
+            re.compile(signal)
+        except re.error:
+            return None
+    return {
+        "positive_signals": [str(x) for x in positive],
+        "negative_signals": [str(x) for x in negative],
+    }
+
+
+def load_implicit_command_fingerprints(path: Optional[str] = None) -> dict:
+    defaults = {k: dict(v) for k, v in DEFAULT_IMPLICIT_COMMAND_FINGERPRINTS.items()}
+    if path is None:
+        path = os.environ.get(IMPLICIT_COMMANDS_ENV)
+    if not path:
+        return defaults
+
+    try:
+        with open(os.path.expanduser(path)) as f:
+            data = json.load(f)
+    except (OSError, ValueError) as e:
+        print(f"rp-why: ignoring {IMPLICIT_COMMANDS_ENV}={path}: {e}", file=sys.stderr)
+        return defaults
+
+    if not isinstance(data, dict):
+        return defaults
+
+    mode = "extend"
+    commands = data
+    if isinstance(data.get("commands"), dict):
+        commands = data["commands"]
+        mode = str(data.get("mode", "extend")).lower()
+
+    custom = {}
+    for trigger, value in commands.items():
+        fingerprint = _normalize_fingerprint(value)
+        if fingerprint is not None:
+            custom[str(trigger).lower().strip()] = fingerprint
+
+    if mode == "replace":
+        return custom
+    defaults.update(custom)
+    return defaults
+
 
 CE_BAND_NUDGES: dict = {
     CEBand.OPTIMIZED.value: [
@@ -363,9 +383,12 @@ def detect_command_in_run(
     command: ImplicitCommand,
     msg_sequence: List[dict],
     run_id: str = "",
+    fingerprint_map: Optional[dict] = None,
 ) -> List[CommandExecution]:
     executions = []
     trigger = command.trigger.lower().strip()
+    if fingerprint_map is None:
+        fingerprint_map = load_implicit_command_fingerprints()
 
     for i, msg in enumerate(msg_sequence):
         if msg.get("role") != "user":
@@ -382,7 +405,7 @@ def detect_command_in_run(
             is_match = text in ("done", "sent", "done.", "sent.")
 
         if is_match:
-            fingerprints = IMPLICIT_COMMAND_FINGERPRINTS.get(trigger, {})
+            fingerprints = fingerprint_map.get(trigger, {})
             positive = fingerprints.get("positive_signals", [])
             negative = fingerprints.get("negative_signals", [])
 
@@ -509,6 +532,8 @@ def compute_ce_report(
     total_token_cost = sum(c.token_cost for c in commands)
     dead_token_cost = 0
 
+    fingerprint_map = load_implicit_command_fingerprints()
+
     for command in commands:
         all_executions = []
 
@@ -517,7 +542,7 @@ def compute_ce_report(
             run_id = run_data.get("run_id", "")
 
             execs = detect_command_in_run(
-                command, msg_list, run_id
+                command, msg_list, run_id, fingerprint_map
             )
             all_executions.extend(execs)
 

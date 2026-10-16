@@ -186,6 +186,34 @@ No action needed. Run `/rp-why init` to generate a fresh v4 baseline, or let the
 
 All data stays local. Nothing is sent externally.
 
+## Custom Implicit Commands
+
+The Configuration Effectiveness report (`/rp-why ce`) reads the Implicit Commands table in your AGENTS.md and scores whether the agent acted on each trigger phrase. A small set of general defaults ships with the skill: `proceed`, `status?`, `deploy`, `sync`, `start the dev server`, `check comments` and `monitor ci`. Any trigger without a fingerprint still gets counted, with a neutral score.
+
+To score your own phrases, point `RP_WHY_IMPLICIT_COMMANDS` at a JSON file. A plain mapping extends the defaults:
+
+```json
+{
+  "refresh the app": {
+    "positive_signals": ["install", "launch"],
+    "negative_signals": ["would you like"]
+  }
+}
+```
+
+To replace the defaults instead, wrap the mapping:
+
+```json
+{
+  "mode": "replace",
+  "commands": {
+    "ship it": {"positive_signals": ["git push"], "negative_signals": []}
+  }
+}
+```
+
+Signals are regular expressions matched against the agent's lowercased reply and tool calls. `tool_call_present` and `no_question_in_response` are special positive signals. If the file can't be read or parsed, the defaults are used and a warning goes to stderr.
+
 ## Learn More
 
 See [SKILL.md](./SKILL.md) for full documentation, including:
