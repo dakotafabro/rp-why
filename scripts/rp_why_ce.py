@@ -437,12 +437,12 @@ def detect_command_in_run(
                 elif signal == "no_question_in_response":
                     if "?" not in response_text[:200]:
                         detected.append(signal)
-                elif re.search(signal, response_text):
+                elif re.search(signal, response_text, re.IGNORECASE):
                     detected.append(signal)
 
             override = False
             for neg in negative:
-                if re.search(neg, response_text):
+                if re.search(neg, response_text, re.IGNORECASE):
                     override = True
                     break
 
