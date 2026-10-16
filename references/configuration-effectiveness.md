@@ -60,6 +60,12 @@ checks session history for evidence of correct execution.
 Detection uses action fingerprinting: observable signals in tool calls
 and agent responses that indicate the expected action occurred.
 
+Default fingerprints cover a few general triggers (`proceed`, `status?`,
+`deploy`, `sync`, `start the dev server`, `check comments`, `monitor ci`).
+Set `RP_WHY_IMPLICIT_COMMANDS` to a JSON file of trigger fingerprints to
+extend them, or use `{"mode": "replace", "commands": {...}}` to replace
+them. See the README for the file format.
+
 ## Dead Instruction Penalty
 
 Instructions that never fire across the measurement window reduce the

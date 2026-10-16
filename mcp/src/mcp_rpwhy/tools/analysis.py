@@ -95,7 +95,9 @@ def register_analysis_tools(mcp: FastMCP) -> None:
                             text=True,
                         ).strip()
                     except Exception:
-                        repo_root = str(Path.home() / "the_professional")
+                        repo_root = None
+                if not repo_root or not Path(repo_root).is_dir():
+                    return json.dumps(result, indent=2)
 
                 log_path = Path(repo_root) / ".interoception-log.csv"
                 session_id = next(iter(session_ids)) if session_ids else date.today().isoformat()
