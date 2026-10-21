@@ -32,8 +32,11 @@ The intersection of these dimensions produces **diagnostic zones** that reveal t
 ### Installation
 
 ```bash
-npx skills add https://github.com/block/agent-skills --skill rp-why
+bpm init            # once per project, if there's no bpm-lock.json yet
+bpm install rp-why
 ```
+
+rp-why is published on the [bpm](https://github.com/dakotafabro/bpm) registry from this repo.
 
 ### Available Commands
 
@@ -100,12 +103,13 @@ Measures intentional orchestration - how deliberately you coordinate AI tools, a
 
 ### Dimension 3: ADT (Agentic Delegation Trust) - Diagnostic Zones
 
-Measures the gap between Tool Complexity and Human Cognitive Depth. The TM x DOK matrix produces six zones:
+Measures the gap between Tool Complexity and Human Cognitive Depth. The TM x DOK matrix, with compression, produces seven zones:
 
 | Zone | Description | Signal |
 |------|-------------|--------|
 | **Frontier** | TM and DOK matched and growing together | Operating at the productive edge |
 | **Growing** | Approaching a match between tool sophistication and cognitive depth | Building toward effective use |
+| **Leveraging** | Strategic thinking encoded in the system (recipes, workflows, conventions) | Prompt-level DOK looks low because the complexity lives in the configuration |
 | **Expected** | Tool usage and cognitive depth appropriate for current level | Healthy starting position |
 | **Thinking Ahead** | Cognitive depth exceeds tool sophistication | Opportunity to adopt more powerful orchestration |
 | **Underutilizing** | Tool sophistication exceeds cognitive depth | Opportunity to deepen the questions being asked |
@@ -116,21 +120,25 @@ Measures the gap between Tool Complexity and Human Cognitive Depth. The TM x DOK
 ## Diagnostic Zone Matrix
 
 ```
-              DOK 1         DOK 2          DOK 3           DOK 4
-            (Recall)    (Application)  (Strategic)     (Extended)
-           +-----------+--------------+-------------+-------------+
-Tier 5-6   | Overpowered| Underutil-  |  Frontier   |  Frontier   |
-(Symphony/ |            |   izing     |             |             |
- Virtuoso) |            |             |             |             |
-           +-----------+--------------+-------------+-------------+
-Tier 3-4   | Overpowered|  Expected   |   Growing   |  Frontier   |
-(Ensemble/ |            |             |             |             |
- Chamber)  |            |             |             |             |
-           +-----------+--------------+-------------+-------------+
-Tier 1-2   |  Expected  |   Growing   |  Thinking   |  Thinking   |
-(Solo/     |            |             |   Ahead     |   Ahead     |
- Duet)     |            |             |             |             |
-           +-----------+--------------+-------------+-------------+
+                DOK 1         DOK 2          DOK 2 + C>=10%   DOK 2.5-2.9     DOK 3+
+              (Recall)    (Application)   (compressed)     (Strategic)     (Extended)
+           +-------------+--------------+----------------+---------------+-------------+
+Tier 5-6   | Overpowered | Underutil-   | Leveraging     | Frontier      | Frontier    |
+(Symphony/ |             |   izing      |                |               |             |
+ Virtuoso) |             |              |                |               |             |
+           +-------------+--------------+----------------+---------------+-------------+
+Tier 3-4   | Overpowered | Expected     | Expected       | Growing       | Frontier    |
+(Ensemble/ |             |              |                |               |             |
+ Chamber)  |             |              |                |               |             |
+           +-------------+--------------+----------------+---------------+-------------+
+Tier 1-2   | Expected    | Growing      | Growing        | Thinking      | Thinking    |
+(Solo/     |             |              |                |   Ahead       |   Ahead     |
+ Duet)     |             |              |                |               |             |
+           +-------------+--------------+----------------+---------------+-------------+
+
+DOK bands: under 2.0, 2.0-2.49, 2.5-2.99, 3.0 and up. C = compression %.
+Compression only changes the zone at Tier 5-6. An improving trajectory moves
+any zone except Frontier, Thinking Ahead and Leveraging up one step.
 ```
 
 ---
@@ -162,7 +170,7 @@ ADT (Delegation Trust)       [Zone]
 
 DIAGNOSTIC ZONE: [Zone Name]
 --------------------------------------------------------------------
-[Zone description from the six-zone model]
+[Zone description from the seven-zone model]
 
 DOK DISTRIBUTION
 --------------------------------------------------------------------
