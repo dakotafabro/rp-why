@@ -7,8 +7,11 @@ A self-reflection framework that tracks three dimensions of your AI collaboratio
 ## Installation
 
 ```bash
-npx skills add https://github.com/block/agent-skills --skill rp-why
+bpm init            # once per project, if there's no bpm-lock.json yet
+bpm install rp-why
 ```
+
+rp-why is published on the [bpm](https://github.com/dakotafabro/bpm) registry from this repo.
 
 Make sure you have the built-in skills extension enabled in Goose.
 
@@ -30,7 +33,7 @@ Make sure you have the built-in skills extension enabled in Goose.
 |-----------|------|-------|
 | **DOK** (Depth of Knowledge) | Cognitive complexity of your prompts | 1.0 - 4.0 |
 | **TM** (Tool Maturity) | Intentional orchestration of AI tools | Tier 1-6 (Orchestra Model) |
-| **ADT** (Agentic Delegation Trust) | Health of the collaboration practice | 6 diagnostic zones |
+| **ADT** (Agentic Delegation Trust) | Health of the collaboration practice | 7 diagnostic zones |
 
 ### Key Metrics in Every Report
 
@@ -39,7 +42,7 @@ Make sure you have the built-in skills extension enabled in Goose.
 - **Floor** - Lowest DOK on routine days. When this rises, the baseline becomes unreproducible.
 - **Adjusted DOK** - Accounts for compression of intent (short prompts that carry complex meaning due to established context).
 
-## The Six Diagnostic Zones
+## The Seven Diagnostic Zones
 
 The TM x DOK matrix produces zones that diagnose where your collaboration practice sits:
 
@@ -47,6 +50,7 @@ The TM x DOK matrix produces zones that diagnose where your collaboration practi
 |------|---------------|--------|
 | **Frontier** | TM and DOK matched and growing. Operating at the productive edge. | Document and share |
 | **Growing** | Approaching a match. Building toward effective use. | Keep pushing DOK 3+ work |
+| **Leveraging** | Strategic thinking encoded in the system (recipes, workflows, conventions). Prompt-level DOK looks low because the complexity lives in the configuration. | Protect this mode for execution weeks |
 | **Expected** | Appropriate match for current level. Healthy starting position. | Ask "why" before implementing |
 | **Thinking Ahead** | Cognitive depth exceeds tools. Opportunity to adopt more powerful orchestration. | Explore sub-agents, multi-step delegation |
 | **Underutilizing** | Tools exceed cognitive depth. Opportunity to deepen the questions. | Batch simple queries, ask bigger questions |
@@ -163,6 +167,14 @@ Consider extending one thread into a multi-session investigation.
   - **macOS/Linux**: `~/.local/share/goose/sessions/`
   - **Windows**: `%LOCALAPPDATA%\goose\sessions\`
 
+## Tests
+
+```bash
+python3 -m unittest discover -s tests
+```
+
+The tests pin the diagnostic zone and Orchestra tier rules in `scripts/rp_why_core.py`.
+
 ## Upgrading from v3
 
 If you have an existing baseline from the Gas Town x DOK era (v3), it will be read and translated automatically:
@@ -234,6 +246,10 @@ See [SKILL.md](./SKILL.md) for full documentation, including:
 ---
 
 ## Changelog
+
+### v4.1.1 (October 2026)
+
+**Install from bpm.** Installation uses `bpm install rp-why`; the `block/agent-skills` repo is archived. The docs list all seven diagnostic zones, including Leveraging. Tests pin the zone and tier rules.
 
 ### v4.0 (June 2026)
 

@@ -1,6 +1,6 @@
 {
   "name": "rp-why",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "type": "extension",
   "description": "Three Dimensions of AI Collaboration Maturity - measure DOK, Tool Maturity, and Agentic Delegation Trust",
   "entry": "SKILL.md",

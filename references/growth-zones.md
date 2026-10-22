@@ -17,21 +17,25 @@ The TM x DOK matrix produces seven diagnostic zones that reveal the health of th
 ## The Matrix
 
 ```
-              DOK 1         DOK 2          DOK 2+C≥10%    DOK 3           DOK 4
-            (Recall)    (Application)   (Leveraging)  (Strategic)     (Extended)
-           +----------+--------------+--------------+-------------+-------------+
-Tier 5-6   | Over-    | Underutil-   | Leveraging   |  Frontier   |  Frontier   |
-(Symphony/ | powered  |   izing      |              |             |             |
- Virtuoso) |          |              |              |             |             |
-           +----------+--------------+--------------+-------------+-------------+
-Tier 3-4   | Over-    |  Expected    |   Growing   |  Frontier   |
-(Ensemble/ | powered  |              |             |             |
- Chamber)  |          |              |             |             |
-           +----------+--------------+-------------+-------------+
-Tier 1-2   | Expected |   Growing    |  Thinking   |  Thinking   |
-(Solo/     |          |              |   Ahead     |   Ahead     |
- Duet)     |          |              |             |             |
-           +----------+--------------+-------------+-------------+
+                DOK 1         DOK 2          DOK 2 + C>=10%   DOK 2.5-2.9     DOK 3+
+              (Recall)    (Application)   (compressed)     (Strategic)     (Extended)
+           +-------------+--------------+----------------+---------------+-------------+
+Tier 5-6   | Overpowered | Underutil-   | Leveraging     | Frontier      | Frontier    |
+(Symphony/ |             |   izing      |                |               |             |
+ Virtuoso) |             |              |                |               |             |
+           +-------------+--------------+----------------+---------------+-------------+
+Tier 3-4   | Overpowered | Expected     | Expected       | Growing       | Frontier    |
+(Ensemble/ |             |              |                |               |             |
+ Chamber)  |             |              |                |               |             |
+           +-------------+--------------+----------------+---------------+-------------+
+Tier 1-2   | Expected    | Growing      | Growing        | Thinking      | Thinking    |
+(Solo/     |             |              |                |   Ahead       |   Ahead     |
+ Duet)     |             |              |                |               |             |
+           +-------------+--------------+----------------+---------------+-------------+
+
+DOK bands: under 2.0, 2.0-2.49, 2.5-2.99, 3.0 and up. C = compression %.
+Compression only changes the zone at Tier 5-6. An improving trajectory moves
+any zone except Frontier, Thinking Ahead and Leveraging up one step.
 ```
 
 ## Zone Calculation Logic
