@@ -43,4 +43,4 @@ Peak compression sessions correlate with highest DOK scores. Compression = short
 
 The cognitive complexity has moved from the prompt surface into the orchestration structure. A 2-word prompt that triggers a 500-word strategic response is not DOK 1 - it's compressed DOK 3.
 
-**Source:** Observed during rp-why longitudinal analysis, Block Builder Fellowship (2026)
+**Source:** Observed during rp-why longitudinal analysis (2026)

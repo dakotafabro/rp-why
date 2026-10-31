@@ -161,7 +161,7 @@ Consider extending one thread into a multi-session investigation.
 
 ## Requirements
 
-- [Goose](https://github.com/block/goose) AI agent
+- [Goose](https://github.com/aaif-goose/goose) AI agent
 - Python 3.9+
 - Goose sessions stored in the default session directory:
   - **macOS/Linux**: `~/.local/share/goose/sessions/`
@@ -240,12 +240,16 @@ See [SKILL.md](./SKILL.md) for full documentation, including:
 
 - **DOK Levels**: Norman Webb (1997). Criteria for alignment of expectations and assessments in mathematics and science education.
 - **Orchestra Model (TM)**: Dakota Fabro (2026). Measuring Cognitive Complexity in Human-AI Collaboration.
-- **Three Dimensions Framework**: Dakota Fabro (2026). rp-why longitudinal dataset, Block Builder Fellowship.
+- **Three Dimensions Framework**: Dakota Fabro (2026). rp-why longitudinal dataset.
 - **Gas Town Stages** (v1-v3 foundation): Steve Yegge, "Welcome to Gas Town" (January 2026).
 
 ---
 
 ## Changelog
+
+### v4.1.2 (October 2026)
+
+**Source credits and links.** Source credits name the author and dataset only, and the goose link points at `aaif-goose/goose`.
 
 ### v4.1.1 (October 2026)
 

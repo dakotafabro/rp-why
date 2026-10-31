@@ -426,7 +426,7 @@ For users familiar with the Gas Town stages:
 
 - **Depth of Knowledge (DOK)**: Norman Webb (1997). Webb, N. L. Criteria for alignment of expectations and assessments in mathematics and science education.
 - **Orchestra Model (TM)**: Dakota Fabro (2026). Measuring Cognitive Complexity in Human-AI Collaboration.
-- **Three Dimensions Framework**: Dakota Fabro (2026). rp-why longitudinal dataset, Block Builder Fellowship.
+- **Three Dimensions Framework**: Dakota Fabro (2026). rp-why longitudinal dataset.
 - **Gas Town Stages** (v1-v3 foundation): Steve Yegge, "Welcome to Gas Town" (January 2026).
 
 ---

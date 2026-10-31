@@ -76,4 +76,4 @@ When a practitioner operates at TM 5+ with DOK band 2, the question is: is the l
 | Typical pattern | URL triggers full review workflow; "proceed" executes multi-step orchestration; parallel sub-agents batch-process work | Long explicit prompts for simple tasks; no delegation patterns; tools used as chat |
 | Growth nudge | Protect this mode. When design work returns, depth will follow. | Deepen the questions. Build recipes to encode repeated patterns. |
 
-**Source:** Dakota Fabro (2026), Three Dimensions Framework, Block Builder Fellowship
+**Source:** Dakota Fabro (2026), Three Dimensions Framework
