@@ -27,7 +27,7 @@ The scores are a reading of your prompts, not a grade on you. What a zone means 
 
 ## Cost
 
-About 3,600 tokens of context (`token_cost` in bpm.json).
+About 4,700 tokens of context (`token_cost` in bpm.json).
 
 ## Check it's working
 

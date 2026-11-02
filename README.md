@@ -247,6 +247,10 @@ See [SKILL.md](./SKILL.md) for full documentation, including:
 
 ## Changelog
 
+### v4.1.3 (November 2026)
+
+**Measured token cost.** `token_cost` is 4700 (was 3600), the cost usebpm.dev measures from `SKILL.md` at about 4 characters per token, rounded to the nearest 100.
+
 ### v4.1.2 (October 2026)
 
 **Source credits and links.** Source credits name the author and dataset only, and the goose link points at `aaif-goose/goose`.
